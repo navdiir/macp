@@ -1,0 +1,15 @@
+@import '~@nativescript/theme/core';
+@import '~@nativescript/theme/ruby';
+
+
+.fa {
+    font-family: FontAwesome;
+}
+
+.fab{
+    font-family: FontAwesomeBrands;
+}
+
+$primary: #f85f6a;
+$title: #35424a;
+$subtitle: #989eb1;
