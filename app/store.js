@@ -79,6 +79,17 @@ const actions = {
             }
         })
     },
+    changePassword({commit}, user){
+        return new Promise(async (res,rej)=>{
+            const response = await fetch(`${config.URL}/usuario/alumnoprograma/actualizar/${user.username}/${user.email}/${user.password}`)
+            if(response.status==500){
+                rej('err');
+            } else if(response.status==200){
+                let data = await response.json();
+                res('ok')
+            }
+        });
+    },
     logout({commit}){
         commit('setUser',null);
         commit('setPrograms',null);

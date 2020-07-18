@@ -1,15 +1,15 @@
 <template>
     <Page actionBarHidden="true" @tap="dismissKeyboard">
         <StackLayout class="page">
-            <GridLayout rows="auto,auto,auto,auto,auto,auto,auto,auto,auto,auto,auto,auto,auto,*,*" columns="*" >
+            <GridLayout rows="auto,auto,auto,auto,auto,auto,auto,auto,auto,auto,auto,*,*" columns="*" >
 
                 <Image row="0" class="logo" src="~/assets/images/logo.png" stretch="aspectFit" />
                 <Label row="1" class="title content-field-inital" text="Cambiar contraseña" />
                 <Label row="2" class="subtitle" text="Pronto estarás de vuelta con nosotros :)" />
                 <Label row="3" class="content-field subtitle-2" text="Username o DNI" />
                 <TextField row="4" :isEnabled="!isBusy" id="tfUsername" @returnPress="focusEmail" returnKeyType="next" v-model="user.username" class="text-field" hint="12345678" keyboardType="text" />
-                <Label row="5" class="content-field subtitle-2" text="Email" />
-                <TextField row="6" :isEnabled="!isBusy" id="tfEmail" rf="email" @returnPress="focusPassword" returnKeyType="next" v-model="user.email" class="text-field" hint="fisi@unmsm.edu.pe" keyboardType="email" />
+                <Label row="5" class="content-2-field subtitle-2" text="Email" />
+                <TextField row="6" :isEnabled="!isBusy" id="tfEmail" ref="email" @returnPress="focusPassword" returnKeyType="next" v-model="user.email" class="text-field" hint="fisi@unmsm.edu.pe" keyboardType="email" />
                 <Label row="7" class="content-2-field subtitle-2" text="Contraseña" />
                 <GridLayout row="8" rows="*" columns="*,auto" class="input-border">
                     <TextField col="0" :isEnabled="!isBusy" @returnPress="focusConfirmPassword" id="tfPass" ref="password" hint="password" :secure="!showPassword" returnKeyType="done" v-model="user.password" class="text-field" keyboardType="email" />
@@ -20,85 +20,19 @@
                     <TextField col="0" :isEnabled="!isBusy" @returnPress="goHome" id="tfPassConfirm" ref="passwordConfirm" hint="password" :secure="!showPasswordConfirm" returnKeyType="done" v-model="user.confirmPassword" class="text-field" keyboardType="email" />
                     <Label @tap="changePasswordConfirmVisibility" col="1" class="icon fa" verticalAlignment="center" :text="showPasswordConfirm?`\uf070`:`\uf06e`" />
                 </GridLayout>
-
                 <Button row="11" :isEnabled="!isBusy" class="content-field btn-signin" text="Recuperar" @tap="goHome" />
-                
-                <Label row="12" class="content-field label-caption" horizontalAlignment="center" text="o usa tus redes sociales" />
-                
-                <GridLayout row="13" rows="auto" columns="*,*" class="content-field">
-                    <GridLayout @tap="loginGoogle" :isEnabled="!isBusy" class="btn-google" col="0" rows="*" columns="70,*">
-                        <Image verticalAlignment="center" horizontalAlignment="right" row="0" col="0" src="~/assets/icons/google.png" />
-                        <Label verticalAlignment="center" horizontalAlignment="left" row="0" col="1" text="Google" />
-                    </GridLayout>
-                    <Button @tap="loginFacebook" height="30rem" :isEnabled="!isBusy" col="1" class="btn-facebook fab" :text="`\uf39e \t\ Facebook`"  />
-                </GridLayout>
-
-                <GridLayout row="14" rows="auto" columns="*,auto" class="content-footer">
-                    <Label :isEnabled="!isBusy" @tap="forgotPassword" col="0" class="subtitle" text="¿Olvidaste tu contraseña?" />
+                <GridLayout row="12" rows="auto" columns="*,auto" class="content-footer">
+                    <Label :isEnabled="!isBusy" @tap="login" col="0" class="subtitle" text="¿Ya tienes una cuenta?" />
                     <Label @tap="signup" :isEnabled="!isBusy" col="1" class="subtitle-2" text="Sign up" />
                 </GridLayout>
 
             </GridLayout>
-
-            <!-- <Image class="logo" src="~/assets/images/logo.png" stretch="aspectFit" />
-            
-                <GridLayout rows="auto,auto" class="content-field-inital">
-                    <Label row="0" class="title" text="Cambiar contraseña" />
-                    <Label row="1" class="subtitle" text="Pronto estarás de vuelta con nosotros :)" />
-                </GridLayout>
-
-                <GridLayout rows="auto,auto" class="content-field">
-                    <Label row="0" class="subtitle-2" text="Username o DNI" />
-                    <TextField :isEnabled="!isBusy" id="tfUsername" @returnPress="focusEmail" returnKeyType="next" row="1" v-model="user.username" class="text-field" hint="12345678" keyboardType="text" />
-                </GridLayout>
-
-                <GridLayout rows="auto,auto" class="content-field">
-                    <Label row="0" class="subtitle-2" text="Email" />
-                    <TextField :isEnabled="!isBusy" id="tfEmail" rf="email" @returnPress="focusPassword" returnKeyType="next" row="1" v-model="user.email" class="text-field" hint="fisi@unmsm.edu.pe" keyboardType="email" />
-                </GridLayout>
-
-                <GridLayout rows="auto,auto" class="content-2-field">
-                    <Label row="0" class="subtitle-2" text="Contraseña" />
-                    <GridLayout row="1" rows="*" columns="*,auto" class="input-border">
-                        <TextField col="0" :isEnabled="!isBusy" @returnPress="goHome" id="tfPass" ref="password" hint="password" :secure="!showPassword" returnKeyType="done" v-model="user.password" class="text-field" keyboardType="email" />
-                        <Label @tap="changePasswordVisibility" col="1" class="icon fa" verticalAlignment="center" :text="showPassword?`\uf070`:`\uf06e`" />
-                    </GridLayout>
-                </GridLayout>
-
-                <GridLayout rows="auto,auto" class="content-2-field">
-                    <Label row="0" class="subtitle-2" text="Contraseña" />
-                    <GridLayout row="1" rows="*" columns="*,auto" class="input-border">
-                        <TextField col="0" :isEnabled="!isBusy" @returnPress="goHome" id="tfPass" ref="password" hint="password" :secure="!showPassword" returnKeyType="done" v-model="user.password" class="text-field" keyboardType="email" />
-                        <Label @tap="changePasswordVisibility" col="1" class="icon fa" verticalAlignment="center" :text="showPassword?`\uf070`:`\uf06e`" />
-                    </GridLayout>
-                </GridLayout>
-
-                <GridLayout rows="auto" class="content-field">
-                    <Button :isEnabled="!isBusy" class="btn-signin" text="Sign In" @tap="goHome" />
-                </GridLayout>
-
-                <GridLayout rows="auto" class="content-field">
-                    <Label class="label-caption" horizontalAlignment="center" text="o usa tus redes sociales" />
-                </GridLayout>
-                
-                <GridLayout rows="auto" columns="*,*" class="content-field">
-                    <GridLayout @tap="loginGoogle" :isEnabled="!isBusy" class="btn-google" col="0" rows="*" columns="70,*">
-                        <Image verticalAlignment="center" horizontalAlignment="right" row="0" col="0" src="~/assets/icons/google.png" />
-                        <Label verticalAlignment="center" horizontalAlignment="left" row="0" col="1" text="Google" />
-                    </GridLayout>
-                    <Button @tap="loginFacebook" height="30rem" :isEnabled="!isBusy" col="1" class="btn-facebook fab" :text="`\uf39e \t\ Facebook`"  />
-                </GridLayout>
-
-                <GridLayout rows="auto" columns="*,auto" class="content-footer">
-                    <Label :isEnabled="!isBusy" @tap="forgotPassword" col="0" class="subtitle" text="¿Olvidaste tu contraseña?" />
-                    <Label @tap="signup" :isEnabled="!isBusy" col="1" class="subtitle-2" text="Sign up" />
-                </GridLayout> -->
         </StackLayout>
     </Page>
 </template>
 
 <script>
-import Home from "./home";
+import Login from "./login";
 
 export default {
     data() {
@@ -127,10 +61,19 @@ export default {
             const reEmail = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
             const reDNI = /^[0-9]{8}$/;
 
-            if(!reEmail.test(this.user.email) && !reDNI.test(this.user.email)){
+            if(!reDNI.test(this.user.username)){
                 this.$feedback.error({
                     title: 'Campos incorrectos',
-                    message: 'Ingresa un correo o DNI válido.',
+                    message: 'Ingresa un Usuario o DNI válido.',
+                    duration: 2500
+                });
+                return;
+            }
+
+            if(!reEmail.test(this.user.email)){
+                this.$feedback.error({
+                    title: 'Campos incorrectos',
+                    message: 'Ingresa un correo válido.',
                     duration: 2500
                 });
                 return;
@@ -143,19 +86,42 @@ export default {
                     duration: 2500
                 });
                 return;
+            } else if(this.user.password.length < 8){
+                this.$feedback.error({
+                    title: 'Campos incorrectos',
+                    message: 'La contraseña debe tener almenos 8 caracteres.',
+                    duration: 2500
+                });
+                return;
+            }
+
+            if(!this.user.confirmPassword){
+                this.$feedback.error({
+                    title: 'Campos incorrectos',
+                    message: 'Confirma tu contraseña.',
+                    duration: 2500
+                });
+                return;
+            } else if(this.user.password != this.user.confirmPassword){
+                this.$feedback.error({
+                    title: 'Campos incorrectos',
+                    message: 'Las contraseñas no coinciden.',
+                    duration: 2500
+                });
+                return;
             }
 
             this.isBusy = true;
             this.$loadingindicator.show({message:'Cargando ...',dimBackground: true, color: '#f85f6a',android:{cancelable:false}});
             try{
-                await this.$store.dispatch('setUser',this.user);
+                await this.$store.dispatch('changePassword',this.user);
                 this.$loadingindicator.hide();
                 this.isBusy = false;
                 this.$feedback.success({
-                    message: `Todo correcto :)`,
+                    message: `Se cambió la contraseña :)`,
                     duration: 200
-                })
-                this.$navigateTo(Home,{clearHistory:true});
+                });
+                this.$navigateTo(Login,{clearHistory:true});
             } catch (err){
                 this.$loadingindicator.hide();
                 this.isBusy = false;
@@ -186,29 +152,14 @@ export default {
             tfEmail.android.clearFocus();
             tfPass.android.clearFocus();
         },
-        loginGoogle(){
-            this.$feedback.info({
-                message: 'Pronto disponible',
-                duration: 2500
-            })
-        },
-        loginFacebook(){
-            this.$feedback.info({
-                message: 'Pronto disponible',
-                duration: 2500
-            })
-        },
         signup(){
             this.$feedback.info({
                 message: 'Pronto disponible',
                 duration: 2500
-            })
+            });
         },
-        forgotPassword(){
-            this.$feedback.info({
-                message: 'Pronto disponible',
-                duration: 2500
-            })
+        login(){
+            this.$navigateTo(Login,{clearHistory:false});
         }
     }
 }
@@ -228,10 +179,10 @@ export default {
         font-weight: bold;
     }
     .content-field{
-        margin-top: 10;
+        margin-top: 30;
     }
     .content-field-inital{
-        margin-top: -10;
+        margin-top: 10;
     }
     .content-2-field{
         margin-top:10;
