@@ -15,7 +15,7 @@
             </StackLayout>
 
             <StackLayout ~mainContent>
-                <GridLayout rows="auto,auto,auto,auto,auto,auto,auto,*" columns="auto,auto,*,auto" class="content-1-field">
+                <GridLayout rows="auto,auto,auto,auto,auto,auto,auto,auto,*" columns="auto,auto,*,auto" class="content-1-field">
                     <Label row="0" @tap="$refs.drawer.nativeView.showDrawer()" col="0" class="icon fa" :text="`\uf0c9`" />
                     <Label row="0" @tap="settings" col="3" class="icon fa" :text="`\uf4fe`" />
                     <Label row="1" col="0" verticalAlignment="center" @tap="goPrograms" class="ruta1 fa" :text="`Programas \uf054 `" />
@@ -24,10 +24,17 @@
                     <Label row="3" col="0" colSpan="4" class="subtitle" :text="`Nombre: ${totalName}`" />
                     <Label row="4" col="0" colSpan="4" class="subtitle" :text="`Codigo: ${program.codAlumno}`" />
                     <Label row="5" col="0" colSpan="4" class="subtitle" :text="`Ingreso: ${program.anioIngreso}`" />
+                    <Label @tap="getBenefit" row="6" col="0" colSpan="4">
+                        <FormattedString>
+                            <Span class="subtitle" text="Beneficio: " />
+                            <Span v-if="benefit" class="linkS" text="Ver más" />
+                            <Span v-else class="subtitle" text="No presenta" />
+                        </FormattedString>
+                    </Label>
 
-                    <SearchBar hint="Buscar concepto..." textFieldHintColor="#989eb1" id='searchBox' ref="sb" @loaded="sbLoaded" row="6" col="0" colSpan="4" v-model="search"  />
+                    <SearchBar hint="Buscar concepto..." textFieldHintColor="#989eb1" id='searchBox' ref="sb" @loaded="sbLoaded" row="7" col="0" colSpan="4" v-model="search"  />
 
-                    <ListView @tap="listAction" row="7" col="0" colSpan="4" for="concept in paymentsFiltered" @itemTap="paymentAction">
+                    <ListView @tap="listAction" row="8" col="0" colSpan="4" for="concept in paymentsFiltered" @itemTap="paymentAction">
                         <v-template>
                             <GridLayout rows="*" columns="*,auto">
                                 <Label :textWrap="true" row="0" col="0" class="lbl-program fa" :text="`\uf570 (${codeConcept(concept)}) ${nameConcept(concept)}`" />
@@ -59,7 +66,7 @@ export default {
     }),
     async mounted(){
         this.$loadingindicator.show({message:'Cargando ...',dimBackground: true, color: '#f85f6a',android:{cancelable:false}});
-        await Promise.all([this.$store.dispatch('setProgram',this.program.codAlumno),this.$store.dispatch('getConcepts')]);
+        await Promise.all([this.$store.dispatch('setProgram',this.program.codAlumno),this.$store.dispatch('getConcepts'),this.$store.dispatch('setBenefit',this.program.codAlumno)]);
         this.paymentsByConcept = Object.keys(this.payments.reduce((obj,item)=>{
             obj[item.idconcepto] = obj[item.idconcepto] || [];
             obj[item.idconcepto].push(item);
@@ -72,13 +79,16 @@ export default {
             return this.paymentsByConcept.filter(e=>this.search?(this.nameConcept(e).toLowerCase().indexOf(this.search.toLowerCase())!=-1 || this.codeConcept(e).toLowerCase().indexOf(this.search.toLowerCase())!=-1):true);
         },
         nameConcept(){
-            return (id) => this.concepts?this.concepts.filter(e=>e.idConcepto==id)[0].descripcion:[];
+            return (id) => this.concepts?this.concepts.filter(e=>e.idConcepto==id)[0]?this.concepts.filter(e=>e.idConcepto==id)[0].descripcion:id:[];
         },
         codeConcept(){
-            return (id) => this.concepts?this.concepts.filter(e=>e.idConcepto==id)[0].concepto.trim():[]
+            return (id) => this.concepts?this.concepts.filter(e=>e.idConcepto==id)[0]?this.concepts.filter(e=>e.idConcepto==id)[0].concepto.trim():id:[]
         },
         payments(){
             return this.$store.state.program;
+        },
+        benefit(){
+            return this.$store.state.benefit;
         },
         concepts(){
             return this.$store.state.concepts;
@@ -91,6 +101,15 @@ export default {
         }
     },
     methods: {
+        getBenefit(){
+            if(this.benefit){
+                alert({
+                    title: 'Descuento',
+                    message: `Beneficio: ${this.benefit.benef_max}\nAutorización: ${this.benefit.autorizacion}\nCondicion: ${this.benefit.condicion}\nFecha: ${this.benefit.fecha}\nResolución: ${this.benefit.resolucion}`,
+                    okButtonText: 'Ok'
+                });
+            }
+        },
         listAction(){},
         sbLoaded(args){
             const searchBar = args.object;
@@ -148,8 +167,16 @@ export default {
         margin-top: 10;
         color: $title;
     }
+    .title-2{
+        color: $title;
+        font-weight: bold;
+        font-size: 18;
+    }
     .subtitle{
         color: $subtitle;
+    }
+    .linkS{
+        color: #007bff;
     }
     .lbl-program{
         font-size: 13;

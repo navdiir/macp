@@ -8,7 +8,8 @@ const state = {
     user: null,
     programs: null,
     program: null,
-    concepts: null
+    concepts: null,
+    benefit: null
 }
 
 const mutations = {
@@ -21,12 +22,27 @@ const mutations = {
     setProgram(state,val){
         state.program = val;
     },
+    setBenefit(state,val){
+        state.benefit = val;
+    },
     getConcepts(state,val){
         state.concepts = val;
     }
 }
 
 const actions = {
+    setBenefit({commit},val){
+        return new Promise( async(res,rej)=>{
+            const response = await fetch(`${config.URL}/beneficio/listar/${val}`);
+            if(response.status==500){
+                rej('err');
+            } else if(response.status==200){
+                let data = await response.json();
+                commit('setBenefit',data[0]);
+                res('ok')
+            }
+        });
+    },
     getConcepts({commit,state}){
         return new Promise( async(res,rej)=>{
             if(!state.concepts){
