@@ -19,7 +19,7 @@
     "@mdi/font": "^5.4.55",
     "@nativescript/theme": "^2.2.1",
     "@nstudio/nativescript-loading-indicator": "^3.0.4",
-    "@vue/devtools": "^5.3.3",
+    "@vue/devtools": "^6.4.5",
     "font-awesome": "^4.7.0",
     "nativescript-accordion": "^6.0.0-beta.2",
     "nativescript-feedback": "^1.5.0",
